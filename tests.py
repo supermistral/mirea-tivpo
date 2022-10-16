@@ -23,6 +23,28 @@ def matrix_b_3x2():
     return Matrix([[0, 2], [4, 6], [8, 0]])
 
 
+def test_size(matrix_a_2x2: Matrix, matrix_b_2x2: Matrix,
+              matrix_a_3x3: Matrix, matrix_b_3x2: Matrix):
+    assert matrix_a_2x2.size() == (2, 2)
+    assert matrix_b_2x2.size() == (2, 2)
+    assert matrix_a_3x3.size() == (3, 3)
+    assert matrix_b_3x2.size() == (3, 2)
+
+
+def test_minor(matrix_a_2x2: Matrix, matrix_a_3x3: Matrix, matrix_b_3x2: Matrix):
+    assert matrix_a_2x2.minor(1, 1) == 8
+    assert matrix_a_2x2.minor(1, 2) == -6
+    assert matrix_a_2x2.minor(2, 1) == -4
+    assert matrix_a_2x2.minor(2, 2) == 2
+
+    assert matrix_a_3x3.minor(1, 1) == -3
+    assert matrix_a_3x3.minor(2, 2) == -12
+    assert matrix_a_3x3.minor(3, 3) == -3
+
+    with pytest.raises(ValueError):
+        matrix_b_3x2.minor(1, 1)
+
+
 def test_determinant(matrix_a_2x2: Matrix, matrix_b_2x2: Matrix,
                      matrix_a_3x3: Matrix, matrix_b_3x2: Matrix):
     assert matrix_a_2x2.determinant() == -2
