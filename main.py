@@ -63,4 +63,7 @@ class Matrix:
         return self._minor(r, c, self._matrix)
 
     def cofactor(self, r: str, c: str) -> float:
-        pass
+        if self._size[0] != self._size[1]:
+            raise IsNotSquareMatrixError()
+
+        return self._cofactor(r, c, self._matrix)

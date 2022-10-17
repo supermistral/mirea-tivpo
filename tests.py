@@ -53,3 +53,19 @@ def test_determinant(matrix_a_2x2: Matrix, matrix_b_2x2: Matrix,
     
     with pytest.raises(ValueError):
         matrix_b_3x2.determinant()
+
+
+def test_cofactor(matrix_a_2x2: Matrix, matrix_a_3x3: Matrix, matrix_b_3x2: Matrix):
+    assert matrix_a_2x2.cofactor(1, 1) == 4
+    assert matrix_a_2x2.cofactor(1, 2) == -3
+    assert matrix_a_2x2.cofactor(2, 1) == -2
+    assert matrix_a_2x2.cofactor(2, 2) == 1
+
+    assert matrix_a_3x3.cofactor(1, 1) == -3
+    assert matrix_a_3x3.cofactor(1, 2) == 6
+    assert matrix_a_3x3.cofactor(2, 2) == -12
+    assert matrix_a_3x3.cofactor(2, 3) == 6
+    assert matrix_a_3x3.cofactor(3, 3) == -3
+
+    with pytest.raises(ValueError):
+        matrix_b_3x2.cofactor(1, 1)
