@@ -40,25 +40,33 @@ def main():
         operation = input("Operation > ").strip()
 
         if operation in ['^-1', 'det', 'transpose']:
-            if operation == '^-1':
-                print_matrix(operand_1.inverse())
-            elif operation == 'det':
-                print_matrix(operand_1.determinant())
-            elif operation == 'transpose':
-                print_matrix(operand_1.transpose())
+            try:
+                if operation == '^-1':
+                    print_matrix(operand_1.inverse())
+                elif operation == 'det':
+                    print(operand_1.determinant())
+                elif operation == 'transpose':
+                    print_matrix(operand_1.transpose())
+            except Exception as e:
+                print("[ERROR]:", e)
+            
+            print()
             continue
 
         operand_2 = get_operand(input("Number or matrix size > ").strip())
         print()
 
-        if operation == '+':
-            print_matrix(operand_1 + operand_2)
-        elif operation == '-':
-            print_matrix(operand_1 - operand_2)
-        elif operation == '*':
-            print_matrix(operand_1 * operand_2)
-        else:
-            print('Unknown operation')
+        try:
+            if operation == '+':
+                print_matrix(operand_1 + operand_2)
+            elif operation == '-':
+                print_matrix(operand_1 - operand_2)
+            elif operation == '*':
+                print_matrix(operand_1 * operand_2)
+            else:
+                print('Unknown operation')
+        except Exception as e:
+            print("[ERROR]:", e)
 
         print()
 
