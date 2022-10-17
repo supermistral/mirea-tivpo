@@ -77,3 +77,50 @@ def test_is_square(matrix_a_2x2: Matrix, matrix_b_2x2: Matrix,
     assert matrix_b_2x2.is_square()
     assert matrix_a_3x3.is_square()
     assert not matrix_b_3x2.is_square()
+
+
+def test_get_matrix(matrix_a_2x2: Matrix, matrix_b_2x2: Matrix,
+                    matrix_a_3x3: Matrix, matrix_b_3x2: Matrix):
+    assert matrix_a_2x2.get_matrix() == [[1, 2], [3, 4]]
+    assert matrix_b_2x2.get_matrix() == [[2, 4], [6, 8]]
+    assert matrix_a_3x3.get_matrix() == [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+    assert matrix_b_3x2.get_matrix() == [[0, 2], [4, 6], [8, 0]]
+
+
+def test_multiplication_by_number(matrix_a_2x2: Matrix, matrix_b_2x2: Matrix,
+                                  matrix_a_3x3: Matrix, matrix_b_3x2: Matrix):
+    new_matrix_a_2x2 = matrix_a_2x2 * 2
+    new_matrix_b_2x2 = matrix_b_2x2 * 2
+    new_matrix_a_3x3 = matrix_a_3x3 * 5
+    new_matrix_b_3x2 = matrix_b_3x2 * 10
+
+    assert isinstance(new_matrix_a_2x2, Matrix)
+    assert isinstance(new_matrix_b_2x2, Matrix)
+    assert isinstance(new_matrix_a_3x3, Matrix)
+    assert isinstance(new_matrix_b_3x2, Matrix)
+
+    assert new_matrix_a_2x2.size() == (2, 2)
+    assert new_matrix_b_2x2.size() == (2, 2)
+    assert new_matrix_a_3x3.size() == (3, 3)
+    assert new_matrix_b_3x2.size() == (3, 2) 
+    assert new_matrix_a_2x2.get_matrix() == [[2, 4], [6, 8]]
+    assert new_matrix_b_2x2.get_matrix() == [[4, 8], [12, 16]]
+    assert new_matrix_a_3x3.get_matrix() == [[5, 10, 15], [20, 25, 30], [35, 40, 45]]
+    assert new_matrix_b_3x2.get_matrix() == [[0, 20], [40, 60], [80, 0]]
+
+
+def test_multiplication_by_matrix(matrix_a_2x2: Matrix, matrix_b_2x2: Matrix,
+                                  matrix_a_3x3: Matrix, matrix_b_3x2: Matrix):
+    new_matrix_a_2x2 = matrix_a_2x2 * matrix_b_2x2
+    new_matrix_a_3x2 = matrix_a_3x3 * matrix_b_3x2
+
+    assert isinstance(new_matrix_a_2x2, Matrix)
+    assert isinstance(new_matrix_a_3x2, Matrix)
+
+    assert new_matrix_a_2x2.size() == (2, 2)
+    assert new_matrix_a_3x2.size() == (3, 2) 
+    assert new_matrix_a_2x2.get_matrix() == [[14, 20], [30, 44]]
+    assert new_matrix_a_3x2.get_matrix() == [[32, 14], [68, 38], [104, 62]]
+
+    with pytest.raises(ArithmeticError):
+        undefined_matrix = matrix_a_2x2 * matrix_a_3x3

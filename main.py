@@ -1,10 +1,16 @@
-from typing import List, Tuple
+from __future__ import annotations
+from typing import Any, List, Tuple, Union
 
 MatrixType = List[List[float]]
 
 
 class IsNotSquareMatrixError(ValueError):
     def __init__(self, message: str = "Matrix must be square"):
+        super().__init__(message)
+
+
+class MatrixSizeMismatchError(ArithmeticError):
+    def __init__(self, message: str = "The sizes of the matrix doesn't allow the operation"):
         super().__init__(message)
 
 
@@ -68,3 +74,30 @@ class Matrix:
     def cofactor(self, r: str, c: str) -> float:
         self._check_for_square()
         return self._cofactor(r, c, self._matrix)
+
+    def get_matrix(self) -> MatrixType:
+        return self._matrix
+
+    def __mul__(self, other: Any) -> Union[Matrix, float, None]:
+        if isinstance(other, (int, float)):
+            matrix = [[0 for _ in range(self._size[1])] for _ in range(self._size[0])]
+            for i in range(self._size[0]):
+                for j in range(self._size[1]):
+                    matrix[i][j] = self._matrix[i][j] * other
+            return Matrix(matrix)
+        if isinstance(other, Matrix):
+            other_size = other.size()
+
+            if self._size[1] != other_size[0]:
+                raise MatrixSizeMismatchError()
+
+            other_matrix = other.get_matrix()
+            matrix = [[0 for _ in range(other_size[1])] for _ in range(self._size[0])]
+            for i in range(self._size[0]):
+                for j in range(other_size[1]):
+                    elem = sum([self._matrix[i][k] * other_matrix[k][j] for k in range(self._size[1])])
+                    matrix[i][j] = elem
+            return Matrix(matrix)
+
+    def __rmul__(self, other: Any) -> Union[Matrix, float, None]:
+        return self + other
