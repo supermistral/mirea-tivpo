@@ -100,4 +100,28 @@ class Matrix:
             return Matrix(matrix)
 
     def __rmul__(self, other: Any) -> Union[Matrix, float, None]:
-        return self + other
+        return self * other
+
+    def __add__(self, other: Any) -> Union[Matrix, None]:
+        if isinstance(other, Matrix):
+            if self.size() != other.size():
+                raise MatrixSizeMismatchError()
+            
+            other_matrix = other.get_matrix()
+            new_matrix = [[0 for _ in range(self._size[1])] for _ in range(self._size[0])]
+            for i in range(self._size[0]):
+                for j in range(self._size[1]):
+                    new_matrix[i][j] = self._matrix[i][j] + other_matrix[i][j]
+            return Matrix(new_matrix)
+    
+    def __sub__(self, other: Any) -> Union[Matrix, None]:
+        if isinstance(other, Matrix):
+            if self.size() != other.size():
+                raise MatrixSizeMismatchError()
+            
+            other_matrix = other.get_matrix()
+            new_matrix = [[0 for _ in range(self._size[1])] for _ in range(self._size[0])]
+            for i in range(self._size[0]):
+                for j in range(self._size[1]):
+                    new_matrix[i][j] = self._matrix[i][j] - other_matrix[i][j]
+            return Matrix(new_matrix)

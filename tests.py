@@ -123,4 +123,37 @@ def test_multiplication_by_matrix(matrix_a_2x2: Matrix, matrix_b_2x2: Matrix,
     assert new_matrix_a_3x2.get_matrix() == [[32, 14], [68, 38], [104, 62]]
 
     with pytest.raises(ArithmeticError):
-        undefined_matrix = matrix_a_2x2 * matrix_a_3x3
+        matrix_a_2x2 * matrix_a_3x3
+
+
+def test_addition(matrix_a_2x2: Matrix, matrix_b_2x2: Matrix,
+                  matrix_a_3x3: Matrix, matrix_b_3x2: Matrix):
+    new_matrix_a_2x2 = matrix_a_2x2 + matrix_b_2x2
+    new_matrix_a_3x3 = matrix_a_3x3 + matrix_a_3x3
+
+    assert isinstance(new_matrix_a_2x2, Matrix)
+    assert isinstance(new_matrix_a_3x3, Matrix)
+
+    assert new_matrix_a_2x2.size() == (2, 2)
+    assert new_matrix_a_3x3.size() == (3, 3) 
+    assert new_matrix_a_2x2.get_matrix() == [[3, 6], [9, 12]]
+    assert new_matrix_a_3x3.get_matrix() == [[2, 4, 6], [8, 10, 12], [14, 16, 18]]
+
+    with pytest.raises(ArithmeticError):
+        matrix_a_2x2 + matrix_b_3x2
+
+def test_subtraction(matrix_a_2x2: Matrix, matrix_b_2x2: Matrix,
+                     matrix_a_3x3: Matrix, matrix_b_3x2: Matrix):
+    new_matrix_a_2x2 = matrix_a_2x2 - matrix_b_2x2
+    new_matrix_a_3x3 = matrix_a_3x3 - matrix_a_3x3
+
+    assert isinstance(new_matrix_a_2x2, Matrix)
+    assert isinstance(new_matrix_a_3x3, Matrix)
+
+    assert new_matrix_a_2x2.size() == (2, 2)
+    assert new_matrix_a_3x3.size() == (3, 3) 
+    assert new_matrix_a_2x2.get_matrix() == [[-1, -2], [-3, -4]]
+    assert new_matrix_a_3x3.get_matrix() == [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
+    with pytest.raises(ArithmeticError):
+        matrix_a_2x2 - matrix_b_3x2
