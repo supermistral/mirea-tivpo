@@ -76,7 +76,7 @@ class Matrix:
         self._check_for_square()
         return self._minor(r, c, self._matrix)
 
-    def cofactor(self, r: str, c: str) -> float:
+    def cofactor(self, r: int, c: int) -> float:
         self._check_for_square()
         return self._cofactor(r, c, self._matrix)
 
