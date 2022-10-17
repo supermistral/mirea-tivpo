@@ -1,6 +1,6 @@
 import pytest
 
-from main import Matrix
+from matrix import Matrix
 
 
 @pytest.fixture

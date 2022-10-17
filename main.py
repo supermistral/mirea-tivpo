@@ -1,157 +1,67 @@
-from __future__ import annotations
-from typing import Any, List, Tuple, Union
-
-MatrixType = List[List[float]]
+from matrix import Matrix
+from typing import Union
 
 
-class IsNotSquareMatrixError(ValueError):
-    def __init__(self, message: str = "Matrix must be square"):
-        super().__init__(message)
+def print_matrix(matrix: Matrix) -> None:
+    matrix_list = matrix.get_matrix()
+    for i in range(matrix.size()[0]):
+        print(*matrix_list[i])
 
 
-class MatrixSizeMismatchError(ArithmeticError):
-    def __init__(self, message: str = "The sizes of the matrix doesn't allow the operation"):
-        super().__init__(message)
+def get_operand(input_str: str) -> Union[Matrix, float]:
+    try:
+        return float(input_str)
+    except:
+        size = tuple(map(int, input_str.split()))
+
+    matrix_list = []
+    for _ in range(size[0]):
+        matrix_list.append(list(map(float, input().split())))
+
+    return Matrix(matrix_list)
 
 
-class ZeroDeterminantError(ArithmeticError):
-    def __init__(self, message: str = "The matrix determinant is zero"):
-        super().__init__(message)
+def main():
+    print("SIMPLE MATRIX CALCULATOR\n\n"
+          "You need to write data in format:\n<operand>\n<operation>\n<operand>\n"
+          "Operand must include size in format '<rows> <columns>' (i.e '3 2')\n"
+          "You can type a number instead\n"
+          "Supported operations: + | - | * | ^-1 | det | transpose\n"
+          "If inverse matrix operation (^-1) is entered, 2nd operand is not required\n"
+          "To quit type /q\n")
+
+    while True:
+        input_str_1 = input("Number or matrix size > ").strip()
+
+        if input_str_1 == '/q':
+            break
+
+        operand_1 = get_operand(input_str_1)
+        operation = input("Operation > ").strip()
+
+        if operation in ['^-1', 'det', 'transpose']:
+            if operation == '^-1':
+                print_matrix(operand_1.inverse())
+            elif operation == 'det':
+                print_matrix(operand_1.determinant())
+            elif operation == 'transpose':
+                print_matrix(operand_1.transpose())
+            continue
+
+        operand_2 = get_operand(input("Number or matrix size > ").strip())
+        print()
+
+        if operation == '+':
+            print_matrix(operand_1 + operand_2)
+        elif operation == '-':
+            print_matrix(operand_1 - operand_2)
+        elif operation == '*':
+            print_matrix(operand_1 * operand_2)
+        else:
+            print('Unknown operation')
+
+        print()
 
 
-class Matrix:
-    def __init__(self, matrix: MatrixType):
-        self._matrix = matrix
-        self._size = self._size_by_matrix(matrix)
-
-    def _size_by_matrix(self, matrix: MatrixType) -> Tuple[int, int]:
-        rows = len(matrix)
-        return rows, len(matrix[0]) if rows > 0 else 0
-
-    def _determinant(self, matrix: MatrixType) -> float:
-        size = self._size_by_matrix(matrix)
-
-        if size[0] == 1:
-            return matrix[0][0]
-        if size[0] == 2:
-            return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
-
-        det = 0
-        for i in range(size[1]):
-            det += matrix[0][i] * self._cofactor(1, i + 1, matrix)
-        
-        return det
-
-    def _minor(self, r: int, c: int, matrix: MatrixType) -> float:
-        new_matrix: MatrixType = []
-
-        for i in range(self._size[0]):
-            if i + 1 != r:
-                new_matrix.append([])
-                for j in range(self._size[1]):
-                    if j + 1 != c:
-                        new_matrix[-1].append(matrix[i][j])
-
-        return self._determinant(new_matrix)
-
-    def _cofactor(self, r: int, c: int, matrix: MatrixType) -> float:
-        factor = 1 if (r + c) % 2 == 0 else -1
-        return factor * self._minor(r, c, matrix)
-
-    def is_square(self) -> bool:
-        return self._size[0] == self._size[1]
-
-    def _check_for_square(self) -> None:
-        if not self.is_square():
-            raise IsNotSquareMatrixError()
-
-    def size(self) -> Tuple[int, int]:
-        return self._size
-
-    def determinant(self) -> float:
-        self._check_for_square()
-        return self._determinant(self._matrix)
-
-    def minor(self, r: int, c: int) -> float:
-        self._check_for_square()
-        return self._minor(r, c, self._matrix)
-
-    def cofactor(self, r: str, c: str) -> float:
-        self._check_for_square()
-        return self._cofactor(r, c, self._matrix)
-
-    def get_matrix(self) -> MatrixType:
-        return self._matrix
-
-    def __mul__(self, other: Any) -> Union[Matrix, float, None]:
-        if isinstance(other, (int, float)):
-            matrix = [[0 for _ in range(self._size[1])] for _ in range(self._size[0])]
-            for i in range(self._size[0]):
-                for j in range(self._size[1]):
-                    matrix[i][j] = self._matrix[i][j] * other
-            return Matrix(matrix)
-        if isinstance(other, Matrix):
-            other_size = other.size()
-
-            if self._size[1] != other_size[0]:
-                raise MatrixSizeMismatchError()
-
-            other_matrix = other.get_matrix()
-            matrix = [[0 for _ in range(other_size[1])] for _ in range(self._size[0])]
-            for i in range(self._size[0]):
-                for j in range(other_size[1]):
-                    elem = sum([self._matrix[i][k] * other_matrix[k][j] for k in range(self._size[1])])
-                    matrix[i][j] = elem
-            return Matrix(matrix)
-
-    def __rmul__(self, other: Any) -> Union[Matrix, float, None]:
-        return self * other
-
-    def __add__(self, other: Any) -> Union[Matrix, None]:
-        if isinstance(other, Matrix):
-            if self.size() != other.size():
-                raise MatrixSizeMismatchError()
-            
-            other_matrix = other.get_matrix()
-            new_matrix = [[0 for _ in range(self._size[1])] for _ in range(self._size[0])]
-            for i in range(self._size[0]):
-                for j in range(self._size[1]):
-                    new_matrix[i][j] = self._matrix[i][j] + other_matrix[i][j]
-            return Matrix(new_matrix)
-    
-    def __sub__(self, other: Any) -> Union[Matrix, None]:
-        if isinstance(other, Matrix):
-            if self.size() != other.size():
-                raise MatrixSizeMismatchError()
-            
-            other_matrix = other.get_matrix()
-            new_matrix = [[0 for _ in range(self._size[1])] for _ in range(self._size[0])]
-            for i in range(self._size[0]):
-                for j in range(self._size[1]):
-                    new_matrix[i][j] = self._matrix[i][j] - other_matrix[i][j]
-            return Matrix(new_matrix)
-    
-    def transpose(self) -> Matrix:
-        matrix = [[0 for _ in range(self._size[0])] for _ in range(self._size[1])]
-        for i in range(self._size[0]):
-            for j in range(self._size[1]):
-                matrix[j][i] = self._matrix[i][j]
-        return Matrix(matrix)
-
-    def inverse(self) -> Matrix:
-        if not self.is_square():
-            raise MatrixSizeMismatchError()
-        
-        det = self.determinant()
-
-        if det == 0:
-            raise ZeroDeterminantError()
-
-        transposed_matrix = self.transpose()
-        inverse_matrix = [[0 for _ in range(self._size[0])] for _ in range(self._size[1])]
-
-        for i in range(self._size[1]):
-            for j in range(self._size[0]):
-                inverse_matrix[i][j] = transposed_matrix.cofactor(i + 1, j + 1)
-
-        return 1 / det * Matrix(inverse_matrix)
+if __name__ == '__main__':
+    main()
