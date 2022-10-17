@@ -47,23 +47,24 @@ class Matrix:
         factor = 1 if (r + c) % 2 == 0 else -1
         return factor * self._minor(r, c, matrix)
 
+    def is_square(self) -> bool:
+        return self._size[0] == self._size[1]
+
+    def _check_for_square(self) -> None:
+        if not self.is_square():
+            raise IsNotSquareMatrixError()
+
     def size(self) -> Tuple[int, int]:
         return self._size
 
     def determinant(self) -> float:
-        if self._size[0] != self._size[1]:
-            raise IsNotSquareMatrixError()
-
+        self._check_for_square()
         return self._determinant(self._matrix)
 
     def minor(self, r: int, c: int) -> float:
-        if self._size[0] != self._size[1]:
-            raise IsNotSquareMatrixError()
-
+        self._check_for_square()
         return self._minor(r, c, self._matrix)
 
     def cofactor(self, r: str, c: str) -> float:
-        if self._size[0] != self._size[1]:
-            raise IsNotSquareMatrixError()
-
+        self._check_for_square()
         return self._cofactor(r, c, self._matrix)

@@ -69,3 +69,11 @@ def test_cofactor(matrix_a_2x2: Matrix, matrix_a_3x3: Matrix, matrix_b_3x2: Matr
 
     with pytest.raises(ValueError):
         matrix_b_3x2.cofactor(1, 1)
+
+
+def test_is_square(matrix_a_2x2: Matrix, matrix_b_2x2: Matrix,
+                   matrix_a_3x3: Matrix, matrix_b_3x2: Matrix):
+    assert matrix_a_2x2.is_square()
+    assert matrix_b_2x2.is_square()
+    assert matrix_a_3x3.is_square()
+    assert not matrix_b_3x2.is_square()
