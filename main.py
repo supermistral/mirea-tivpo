@@ -14,6 +14,11 @@ class MatrixSizeMismatchError(ArithmeticError):
         super().__init__(message)
 
 
+class ZeroDeterminantError(ArithmeticError):
+    def __init__(self, message: str = "The matrix determinant is zero"):
+        super().__init__(message)
+
+
 class Matrix:
     def __init__(self, matrix: MatrixType):
         self._matrix = matrix
@@ -125,3 +130,28 @@ class Matrix:
                 for j in range(self._size[1]):
                     new_matrix[i][j] = self._matrix[i][j] - other_matrix[i][j]
             return Matrix(new_matrix)
+    
+    def transpose(self) -> Matrix:
+        matrix = [[0 for _ in range(self._size[0])] for _ in range(self._size[1])]
+        for i in range(self._size[0]):
+            for j in range(self._size[1]):
+                matrix[j][i] = self._matrix[i][j]
+        return Matrix(matrix)
+
+    def inverse(self) -> Matrix:
+        if not self.is_square():
+            raise MatrixSizeMismatchError()
+        
+        det = self.determinant()
+
+        if det == 0:
+            raise ZeroDeterminantError()
+
+        transposed_matrix = self.transpose()
+        inverse_matrix = [[0 for _ in range(self._size[0])] for _ in range(self._size[1])]
+
+        for i in range(self._size[1]):
+            for j in range(self._size[0]):
+                inverse_matrix[i][j] = transposed_matrix.cofactor(i + 1, j + 1)
+
+        return 1 / det * Matrix(inverse_matrix)

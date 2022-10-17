@@ -157,3 +157,21 @@ def test_subtraction(matrix_a_2x2: Matrix, matrix_b_2x2: Matrix,
 
     with pytest.raises(ArithmeticError):
         matrix_a_2x2 - matrix_b_3x2
+
+
+def test_transposition(matrix_a_2x2: Matrix, matrix_b_2x2: Matrix,
+                       matrix_a_3x3: Matrix, matrix_b_3x2: Matrix):
+    assert matrix_a_2x2.transpose().get_matrix() == [[1, 3], [2, 4]]
+    assert matrix_b_2x2.transpose().get_matrix() == [[2, 6], [4, 8]]
+    assert matrix_a_3x3.transpose().get_matrix() == [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
+    assert matrix_b_3x2.transpose().get_matrix() == [[0, 4, 8], [2, 6, 0]]
+
+
+def test_inverse_matrix(matrix_a_2x2: Matrix, matrix_b_2x2: Matrix,
+                        matrix_a_3x3: Matrix, matrix_b_3x2: Matrix):
+    assert matrix_a_2x2.inverse().get_matrix() == [[-2, 1], [1.5, -0.5]]
+    assert matrix_b_2x2.inverse().get_matrix() == [[-1, 0.5], [0.75, -0.25]]
+
+    with pytest.raises(ArithmeticError):
+        matrix_a_3x3.inverse()
+        matrix_b_3x2.inverse()
