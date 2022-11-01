@@ -1,0 +1,5 @@
+astroid==2.12.12
+deal==4.23.4
+lazy-object-proxy==1.8.0
+typing-extensions==4.4.0
+wrapt==1.14.1
